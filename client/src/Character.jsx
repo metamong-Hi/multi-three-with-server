@@ -10,6 +10,7 @@ import { CapsuleCollider, RigidBody } from '@react-three/rapier';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from "three"
 import "./Character.css"
+import { socket } from './ServerConnector';
 
 const CHARACTER_HEIGH = 1.79;
 const CAPSULE_RADIUS = 0.3;
@@ -31,7 +32,7 @@ export function ApplyShadow({ refTarget }) {
 function UpdateFrame({ actions, refModel, refRigid, refOrbitControls }) {
   const [ /*subscribeKeys*/, getKeys] = useKeyboardControls();
   const refSpeed = useRef(0);
-
+  const refExceedTime = useRef(0)
   const refPlayingActionName = useRef();
   const playAction = useCallback((actionName) => {
     if (refPlayingActionName.current === actionName) return;
@@ -94,8 +95,8 @@ function UpdateFrame({ actions, refModel, refRigid, refOrbitControls }) {
       camera.position.z - modelPostion.z
     ) + Math.PI + getDirectionOffset(keys); // getDirectionOffset: 눌러진 키 방향으로 캐릭터 바라보기
     const rotateQuarternion = new THREE.Quaternion();
-    rotateQuarternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0),
-      angleCameraDirectionAxisY);
+    const rotationY = angleCameraDirectionAxisY + getDirectionOffset(keys)
+    rotateQuarternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rotationY)
     model.quaternion.rotateTowards(rotateQuarternion,
       THREE.MathUtils.degToRad(5));
 
@@ -120,16 +121,27 @@ function UpdateFrame({ actions, refModel, refRigid, refOrbitControls }) {
       if (refOrbitControls.current) {
         refOrbitControls.current.target.set(cx, cy, cz);
       }
+      refExceedTime.current += delta
+      if (refExceedTime.current > 0.2) {
+        socket.emit("update", {
+          animationName: refPlayingActionName.current,
+          position: [cx, cy, cz],
+          rotationY: angleCameraDirectionAxisY
+        })
+        refExceedTime.current = 0
+      }
     }
   });
 }
 
-function Character({ name="익명", refOrbitControls, ...props }, refRigid) {
+function Character({ name = "익명", refOrbitControls, ...props }, refRigid) {
   const group = useRef();
   // const refRigid = useRef();
   const { nodes, materials, animations } = useGLTF('/character.glb')
   const { actions } = useAnimations(animations, group)
-
+  useEffect(() => {
+    // refRigid.current.setTranslation({x:props.position[0],y:props.position[1],z:props.position[2]});
+  }, [])
   return (
     <>
       <RigidBody lockRotations {...props} ref={refRigid} colliders={false}>
@@ -149,9 +161,9 @@ function Character({ name="익명", refOrbitControls, ...props }, refRigid) {
               <skinnedMesh name="Wolf3D_Outfit_Top" geometry={nodes.Wolf3D_Outfit_Top.geometry} material={materials.Wolf3D_Outfit_Top} skeleton={nodes.Wolf3D_Outfit_Top.skeleton} />
               <skinnedMesh name="Wolf3D_Teeth" geometry={nodes.Wolf3D_Teeth.geometry} material={materials.Wolf3D_Teeth} skeleton={nodes.Wolf3D_Teeth.skeleton} />
             </group>
-            <Html wrapperClass='character-name' 
-              position-y={CHARACTER_HEIGH + CHARACTER_HEIGH/13} center>
-                {name}
+            <Html wrapperClass='character-name'
+              position-y={CHARACTER_HEIGH + CHARACTER_HEIGH / 13} center>
+              {name}
             </Html>
           </group>
         </group>
