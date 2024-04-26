@@ -21,11 +21,17 @@ io.on("connection", (socket) => {
     // console.log(characters);
     socket.on("update", (data => {
         const character = characters.find(item => item.key === socket.id);
+
+        //캐릭터 이동 시 채팅 숨김
+        if(character.position.some((v,i) => v!==data.position[i])){
+            character.talk="";
+        }
+
         character.animationName = data.animationName;
         character.position = data.position;
         character.rotationY = data.rotationY;
 
-        socket.broadcast.emit("characters", characters);
+        io.emit("characters", characters);
     }))
 
     socket.on("join", (name) => {
@@ -34,7 +40,8 @@ io.on("connection", (socket) => {
             name: name,
             animationName: "Idle",
             position: [Math.random() * 10 - 5, 1, Math.random() * 10 - 5],
-            rotationY: (Math.random() * 360) * (Math.PI / 180)
+            rotationY: (Math.random() * 360) * (Math.PI / 180),
+            talk:""
         });
         io.emit("characters",characters);
     });
