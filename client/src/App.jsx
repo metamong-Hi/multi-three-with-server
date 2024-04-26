@@ -4,9 +4,11 @@ import Experience from './Experience'
 import { Canvas } from "@react-three/fiber"
 import { useState } from 'react';
 import ServerConnector from './ServerConnector';
-
+import LoginOverlay, { userNameAtom } from './LoginOverlay';
+import {atom,useAtom} from "jotai";
 function App() {
   const [ loaded, setLoaded ] = useState(false);
+  const[userName]=useAtom(userNameAtom);
 
   return (
     <>
@@ -25,6 +27,7 @@ function App() {
           if(v >= 100) setLoaded(true);
           return parseInt(v) + "% 다운로드 중입니다."
         }} />
+       {!userName && <LoginOverlay/>}
       </KeyboardControls>
     </>
   )
