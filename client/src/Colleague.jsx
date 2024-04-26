@@ -24,6 +24,10 @@ function Animation({ actions, refModel, refRigid, animationName, position, rotat
         }
     }, [ animationName ])
 
+    useEffect(() => {
+        refRigid.current.setTranslation({ x:position[0], y: position[1], z: position[2] });
+    }, []);
+
     useFrame((state, delta) => {
         // 회전
         if(refModel.current) {
@@ -37,21 +41,23 @@ function Animation({ actions, refModel, refRigid, animationName, position, rotat
             // const cy = refRigid.current.translation().y;
             // refRigid.current.setTranslation({ x: position[0], y: cy, z: position[2] })
 
-            const t=refRigid.current.translation();
-            const cp=new THREE.Vector3(t.x,t.y,t.z);
-            const tp=new THREE.Vector3(position[0], position[1], position[2]);
-            let speed = animationName === "Walk" ? WALK_SPEED : (animationName === "Run" ? RUN_SPEED : 0)
-            if (speed === 0 && cp.distanceTo(tp) > 0.1) speed = 1
-            //선형보간
-            const dir=tp.sub(cp).normalize();
-            const dx=dir.x * (speed*delta);
-            const dy=dir.y * (speed*delta);
-            const dz=dir.z * (speed*delta);
+            const t = refRigid.current.translation();
+            const cp = new THREE.Vector3(t.x, t.y, t.z);
+            const tp = new THREE.Vector3(position[0], position[1], position[2]);
+            let speed = animationName === "Walk" ? WALK_SPEED : (animationName === "Run" ? RUN_SPEED : 0);
+            if(speed === 0 && cp.distanceTo(tp) > 0.1) speed = WALK_SPEED;
 
-            const cx=t.x+dx;
-            const cy=t.y+dy;
-            const cz=t.z+dz;
-            refRigid.current.setTranslation({ x: cx, y: cy, z: cz });
+            const dir = tp.sub(cp).normalize();
+            const sd = speed * delta;
+            const dx = dir.x * sd;
+            const dy = dir.y * sd;
+            const dz = dir.z * sd;
+
+            const cx = t.x + dx;
+            const cy = t.y + dy;
+            const cz = t.z + dz;
+
+            refRigid.current.setTranslation({ x:cx, y: cy, z: cz });
         }
     });
 }
@@ -69,7 +75,7 @@ export function Model({ name = "익명", position, animationName="Idle", rotatio
 
     return (
         <>
-            <RigidBody lockRotations ref={refRigid} colliders={false} position={position}>
+            <RigidBody lockRotations ref={refRigid} colliders={false} /*position={position}*/>
                 <CapsuleCollider args={[COLLEAGUE_HEIGH / 2 - COLLEAGUE_RADIUS, COLLEAGUE_RADIUS]} />
                 <group ref={group} dispose={null} position-y={-COLLEAGUE_HEIGH / 2}>
                     <group name="Scene">
