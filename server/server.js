@@ -2,7 +2,7 @@ import { Server } from "socket.io"
 const characters = [];
 const io = new Server({
     cors: {
-        origin: "http://localhost:5174"
+        origin: "http://localhost:5173"
     }
 });
 

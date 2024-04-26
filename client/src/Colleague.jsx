@@ -14,7 +14,10 @@ import { DEG2RAD } from 'three/src/math/MathUtils.js';
 
 const COLLEAGUE_HEIGH = 1.79;
 const COLLEAGUE_RADIUS = 0.3;
-
+let bTriggerFocus=false;
+window.onfocus=()=>{
+    bTriggerFocus=true;
+}
 function Animation({ actions, refModel, refRigid, animationName, position, rotationY }) {
     useEffect(() => {
         const action = actions[animationName];
@@ -40,7 +43,10 @@ function Animation({ actions, refModel, refRigid, animationName, position, rotat
         if(refRigid.current) {
             // const cy = refRigid.current.translation().y;
             // refRigid.current.setTranslation({ x: position[0], y: cy, z: position[2] })
-
+            if(bTriggerFocus) {
+                refRigid.current.setTranslation({ x:position[0], y:position[1], z:position[2] });
+                setTimeout(() =>{ bTriggerFocus=false; }, 200);
+                } else{
             const t = refRigid.current.translation();
             const cp = new THREE.Vector3(t.x, t.y, t.z);
             const tp = new THREE.Vector3(position[0], position[1], position[2]);
@@ -58,6 +64,7 @@ function Animation({ actions, refModel, refRigid, animationName, position, rotat
             const cz = t.z + dz;
 
             refRigid.current.setTranslation({ x:cx, y: cy, z: cz });
+                }
         }
     });
 }
