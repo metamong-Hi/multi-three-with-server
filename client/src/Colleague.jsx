@@ -62,7 +62,7 @@ function Animation({ actions, refModel, refRigid, animationName, position, rotat
     });
 }
 
-export function Model({ name = "익명", position, animationName="Idle", rotationY=0 }) {
+export function Model({ talk="",name = "익명", position, animationName="Idle", rotationY=0 }) {
     const group = useRef()
     const refRigid = useRef();
 
@@ -96,7 +96,8 @@ export function Model({ name = "익명", position, animationName="Idle", rotatio
                         </group>
                         <Html wrapperClass='character-name'
                             position-y={COLLEAGUE_HEIGH + COLLEAGUE_HEIGH / 13} center>
-                            {name}
+                            <div className='name'>{name}</div>
+                            {talk && <div className='talk'>{talk}</div>}
                         </Html>
                     </group>
                 </group>

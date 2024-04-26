@@ -136,7 +136,7 @@ function UpdateFrame({ actions, refModel, refRigid, refOrbitControls }) {
   });
 }
 
-function Character({ name="익명", refOrbitControls, ...props }, refRigid) {
+function Character({ name="익명", talk="",refOrbitControls, ...props }, refRigid) {
   const group = useRef();
   // const refRigid = useRef();
   const { nodes, materials, animations } = useGLTF('/character.glb')
@@ -168,7 +168,8 @@ function Character({ name="익명", refOrbitControls, ...props }, refRigid) {
             </group>
             <Html wrapperClass='character-name' 
               position-y={CHARACTER_HEIGH + CHARACTER_HEIGH/13} center>
-                {name}
+                <div className='name'>{name}</div>
+                {talk && <div className='talk'>{talk}</div>}
             </Html>
           </group>
         </group>

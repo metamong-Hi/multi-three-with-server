@@ -6,6 +6,7 @@ import { useState } from 'react';
 import ServerConnector from './ServerConnector';
 import LoginOverlay, { userNameAtom } from './LoginOverlay';
 import {atom,useAtom} from "jotai";
+import TalkOverlay from './TalkOverlay';
 function App() {
   const [ loaded, setLoaded ] = useState(false);
   const[userName]=useAtom(userNameAtom);
@@ -28,6 +29,7 @@ function App() {
           return parseInt(v) + "% 다운로드 중입니다."
         }} />
        {!userName && <LoginOverlay/>}
+       {userName && <TalkOverlay/>}
       </KeyboardControls>
     </>
   )

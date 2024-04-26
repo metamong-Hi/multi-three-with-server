@@ -38,7 +38,11 @@ io.on("connection", (socket) => {
         });
         io.emit("characters",characters);
     });
-
+    socket.on("talk",(msg)=>{
+        const character=characters.find(item=>item.key===socket.id);
+        character.talk=msg;
+        io.emit("characters",characters);
+    });
 
     socket.on("disconnect", () => {
         console.log(`bye ${socket.id}`);
