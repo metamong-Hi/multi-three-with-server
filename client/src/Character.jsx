@@ -15,8 +15,8 @@ import { socket } from './ServerConnector';
 const CHARACTER_HEIGH = 1.79;
 const CAPSULE_RADIUS = 0.3;
 
-const WALK_SPEED = 1;
-const RUN_SPEED = 2;
+export const WALK_SPEED = 1;
+export const RUN_SPEED = 2;
 
 export function ApplyShadow({ refTarget }) {
   useEffect(() => {
