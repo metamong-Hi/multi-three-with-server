@@ -10,6 +10,7 @@ import { Model as Colleague } from "./Colleague"
 import { DEG2RAD } from "three/src/math/MathUtils.js";
 import { castAtom, socket } from "./ServerConnector";
 import { useAtom } from "jotai";
+import { EffectComposer,N8AO } from "@react-three/postprocessing";
 function FollowShadowLight({ refLight, refCharacterRigid }) {
     useFrame(() => {
         if(refCharacterRigid.current) {
@@ -56,7 +57,9 @@ export default function Experience({ loaded }) {
     return <>
         <Perf position="bottom-left" />
         <OrbitControls ref={refOrbitControls} />
-
+        <EffectComposer>
+            <N8AO distanceFalloff={1} aoRadius={.5} intensity={1.4}/>
+        </EffectComposer>
         <directionalLight shadow-normalBias={0.05} ref={refLight} castShadow
             position={[0, 1, 2]} intensity={1} />
         <Environment preset="city" />

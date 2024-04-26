@@ -97,7 +97,7 @@ export function Model({ talk="",name = "익명", position, animationName="Idle",
                         <Html wrapperClass='character-name'
                             position-y={COLLEAGUE_HEIGH + COLLEAGUE_HEIGH / 13} center>
                             <div className='name'>{name}</div>
-                            {talk && <div className='talk'>{talk}</div>}
+                            {talk && <div key={talk} className='talk'>{talk}</div>}
                         </Html>
                     </group>
                 </group>
