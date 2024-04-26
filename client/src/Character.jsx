@@ -169,7 +169,7 @@ function Character({ name="익명", talk="",refOrbitControls, ...props }, refRig
             <Html wrapperClass='character-name' 
               position-y={CHARACTER_HEIGH + CHARACTER_HEIGH/13} center>
                 <div className='name'>{name}</div>
-                {talk && <div className='talk'>{talk}</div>}
+                {talk && <div key={talk}className='talk'>{talk}</div>}
             </Html>
           </group>
         </group>
