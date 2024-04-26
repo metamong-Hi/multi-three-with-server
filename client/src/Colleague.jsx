@@ -91,14 +91,20 @@ export function Model({ talk="",name = "익명", position, animationName="Idle",
                                 name="Alpha_Joints"
                                 geometry={nodes.Alpha_Joints.geometry}
                                 material={materials.Alpha_Joints_MAT}
-                                skeleton={nodes.Alpha_Joints.skeleton}
-                            />
+                                skeleton={nodes.Alpha_Joints.skeleton}>
+                                <meshPhysicalMaterial
+                                    color="white" metalness={1} roughness={0.2} clearcoat={1} clearcoatRoughness={0.2}/>
+                            </skinnedMesh>
                             <skinnedMesh
                                 name="Alpha_Surface"
                                 geometry={nodes.Alpha_Surface.geometry}
                                 material={materials.Alpha_Body_MAT}
                                 skeleton={nodes.Alpha_Surface.skeleton}
-                            />
+                                
+                            >
+    <meshPhysicalMaterial
+                                    color="white" side={THREE.DoubleSide} metalness={0} roughness={0} transmission={1} ior={1.7} thickness={4}/>
+                            </skinnedMesh>
                             <primitive object={nodes.mixamorigHips} />
                         </group>
                         <Html wrapperClass='character-name'
